@@ -20,10 +20,28 @@ export default class MyChat extends Component {
 
 
         console.log('ComponentDidMount Called')
-       
+        const username = 'Hasan' //window.prompt('Your name:', 'John');
+        const hubConnection = new SignalR.HubConnectionBuilder().withUrl("https://localhost:44379/signalrServer")
+            .configureLogging(SignalR.LogLevel.Information)
+            .build();
+        this.setState({ hubConnection, username }, () => {
+            this.state.hubConnection
+                .start()
+                .then(() => console.log('Connection started!'))
+                .catch(err => console.log('Error while establishing connection :('));
+            this.state.hubConnection.on("LoadMessages", (message)=> {
+
+                console.log('SignalR Response')
+                console.log('message from ', message)
+                
+
+            });
+
+
+        }) 
        
 
-        const username = 'Hasan' //window.prompt('Your name:', 'John');
+       /* const username = 'Hasan' //window.prompt('Your name:', 'John');
         const hubConnection = new SignalR.HubConnectionBuilder().withUrl("https://localhost:44379/signalrServer")
             .configureLogging(SignalR.LogLevel.Information)
             .build();
@@ -52,7 +70,7 @@ export default class MyChat extends Component {
             });
 
 
-        })  
+        })  */
 
        
     }
@@ -76,10 +94,18 @@ export default class MyChat extends Component {
 
     async sendMessage() {
 
-        this.state
-            .hubConnection.invoke("LoadMessages").catch(function (err) {
+
+     
+
+
+       // this.state.hubConnection
+           /// .invoke('LoadMessages', this.state.message)
+            //.catch(err => console.error(err));
+
+       /* this.state
+            .hubConnection.invoke("LoadMessages", this.state.message).catch(function (err) {
                 return console.error(err.toString());
-            }); 
+            }); */
 
         console.log('Submit start')
 
@@ -106,7 +132,8 @@ export default class MyChat extends Component {
             })
             .catch((error) => {
                 console.log('Error')
-            });
+            }); 
+
         console.log('Submit End')
     }
     render() {

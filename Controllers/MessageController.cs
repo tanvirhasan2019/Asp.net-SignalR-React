@@ -34,9 +34,10 @@ namespace ChatWithSignalR.Controllers
         public IActionResult CreateMessage([FromBody] Message message)
         {
 
-            _context.Messages.Add(message);
-            _context.SaveChanges();
-            _SignalRHub.Clients.All.SendAsync("LoadMessages");
+           // _context.Messages.Add(message);
+           // _context.SaveChanges();
+            _SignalRHub.Clients.All.SendAsync("LoadMessages", message.Messages);
+            //_SignalRHub.Clients.All.InvokeAsync("sendToAll", message.Messages);
 
             return Ok(new { status = "OK" });
 
